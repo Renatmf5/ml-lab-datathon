@@ -193,6 +193,9 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-# Arquivos parquet e json
+# Arquivos parquet e json e embeddings e numpy
+*.npy
+*.npz
+*.embeddings
 *.parquet
 *.json
