@@ -1,0 +1,20 @@
+# appspec.yaml
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: "<TASK_DEFINITION_PLACEHOLDER>"  # Esse valor será substituído automaticamente pelo CodeDeploy usando o arquivo imagedefinitions.json
+Hooks:
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      timeout: 300
+  AfterInstall:
+    - location: scripts/after_install.sh
+      timeout: 300
+  ApplicationStop:
+    - location: scripts/stop_application.sh
+      timeout: 300
+  ApplicationStart:
+    - location: scripts/start_application.sh
+      timeout: 300
