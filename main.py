@@ -3,7 +3,7 @@ from features.build_features import build
 
 if __name__ == '__main__':
     print("Iniciando build das features...")
-    #build()
+    build()
     print("Build das features finalizado.")
     
     print("Iniciando pipeline de treinamento...")
