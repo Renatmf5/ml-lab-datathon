@@ -12,12 +12,12 @@ def run_training_pipeline():
 
     # Em seguida, treine o modelo
     print("Iniciando treinamento do modelo de matching...")
-    model_version = train_model_tfidVectorizer.run()
+    #model_version = train_model_tfidVectorizer.run()
     
     # Agora, preparo os dados de recomendação de vagas
     print("Preparando dados de recomendação de vagas...")
     prepare_recommendation_data.build()  # supondo que a função build()
     #model_version = "v7"  # Defina a versão do modelo conforme necessário
     print("Treinamento do modelo de recomendação de vagas iniciado...")
-    train_model_recommendation.run(model_version)  # inicia o treinamento do modelo de recomendação
+    #train_model_recommendation.run(model_version)  # inicia o treinamento do modelo de recomendação
     print("Pipeline de treinamento concluído com sucesso.")

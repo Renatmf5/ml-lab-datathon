@@ -2,7 +2,8 @@ import json
 import pandas as pd
 from pathlib import Path
 from datetime import datetime
-from data import load_applicants, load_prospects, load_vagas, save_features
+from data import load_applicants, load_prospects, load_vagas
+from data.uploader import save_features
 import re
 
 bucket = "decision-data-lake"  # Alterar conforme necessário
@@ -183,6 +184,7 @@ def build():
                 "outros_idiomas": formacao.get("outro_idioma"),
 
                 # Informações sobre a vaga
+                "codigo_vaga": vaga_id,
                 "titulo_vaga": vagas_info.get("titulo_vaga"),
                 "vaga_sap": vagas_info.get("vaga_sap"),
                 "tipo_contratacao": vagas_info.get("tipo_contratacao"),

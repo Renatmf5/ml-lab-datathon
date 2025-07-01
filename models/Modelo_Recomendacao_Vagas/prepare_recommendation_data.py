@@ -60,7 +60,7 @@ def build():
 
     # Opcionalmente, defina colunas importantes para manter
     cols_output = [
-        "codigo", "texto_candidato", "texto_vaga",
+        "codigo","codigo_vaga", "texto_candidato", "texto_vaga",
         "titulo_profissional", "conhecimentos_tecnicos", "cv_candidato",
         "titulo_vaga", "competencia_tecnicas_e_comportamentais", "areas_atuacao_vaga",
         "cidade", "cidade_vaga"
