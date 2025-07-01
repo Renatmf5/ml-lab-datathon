@@ -62,7 +62,7 @@ def run(models_version=None):
 
     # Atualiza o arquivo latest.txt com todos os arquivos do modelo
     latest_key = f"models/Modelo_Recomendacao_Vagas/latest.txt"
-    latest_content = f"v{models_version}/candidate_embeddings.npy\n" \
-                   f"v{models_version}/job_embeddings.npy\n" \
-                   f"v{models_version}/annoy_index.ann\n"
+    latest_content = f"{models_version}/candidate_embeddings.npy\n" \
+                   f"{models_version}/job_embeddings.npy\n" \
+                   f"{models_version}/annoy_index.ann\n"
     update_latest_txt(BUCKET, latest_key, latest_content)
