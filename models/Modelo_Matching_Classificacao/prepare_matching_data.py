@@ -3,6 +3,7 @@ from data.downloader import load_parquet_from_s3
 from data.uploader import save_parquet  
 
 BUCKET = "decision-data-lake"
+BUCKET_FEATURES = "decision-data-lake-features"
 S3_KEY = "features/candidates.parquet"   # para leitura dos dados originais
 LOCAL_FILENAME = "candidates.parquet"
 # Defina a key para o processed dataset no S3
@@ -15,8 +16,8 @@ MATCH_SITUACOES_POSITIVAS = [
 ]
 
 def build():
-    print(f"Lendo features de: s3://{BUCKET}/{S3_KEY}")
-    df = load_parquet_from_s3(BUCKET, S3_KEY, LOCAL_FILENAME)
+    print(f"Lendo features de: s3://{BUCKET_FEATURES}/{S3_KEY}")
+    df = load_parquet_from_s3(BUCKET_FEATURES, S3_KEY, LOCAL_FILENAME)
     print(f"Total de registros lidos: {len(df)}")
     
     df["match"] = df["situacao_candidato"].isin(MATCH_SITUACOES_POSITIVAS).astype(int)

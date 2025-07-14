@@ -6,15 +6,17 @@ from data.downloader import load_parquet_from_s3
 from data.uploader import save_parquet
 
 BUCKET = "decision-data-lake"
+BUCKET_FEATURES = "decision-data-lake-features"
 S3_KEY = "features/candidates.parquet"   # para leitura dos dados originais
 LOCAL_FILENAME = "candidates.parquet"
 # Caminhos
+S3_KEY_PROCESSED = "processed/recommendation_pairs.parquet"
 
 OUTPUT_PATH = Path("models/Modelo_Recomendacao_Vagas/data/recommendation_pairs.parquet")
 
 def build():
     # Carrega os dados
-    df = load_parquet_from_s3(BUCKET, S3_KEY, LOCAL_FILENAME)
+    df = load_parquet_from_s3(BUCKET_FEATURES, S3_KEY, LOCAL_FILENAME)
 
     # Filtra candidatos com situações positivas
     MATCH_SITUACOES_POSITIVAS = [
@@ -72,6 +74,6 @@ def build():
     df_pairs.to_parquet(OUTPUT_PATH, index=False)
 
     # Salva os pares no bucket S3 na pasta processed
-    s3_key_processed = "processed/recommendation_pairs.parquet"
-    save_parquet(df_pairs, BUCKET, s3_key_processed)
-    print(f"Pares filtrados salvos no bucket {BUCKET} com a chave {s3_key_processed}")
+    
+    save_parquet(df_pairs, BUCKET, S3_KEY_PROCESSED)
+    print(f"Pares filtrados salvos no bucket {BUCKET} com a chave {S3_KEY_PROCESSED}")

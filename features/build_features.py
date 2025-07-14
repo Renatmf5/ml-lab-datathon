@@ -7,6 +7,7 @@ from data.uploader import save_features
 import re
 
 bucket = "decision-data-lake"  # Alterar conforme necessário
+BUCKET_FEATURES = "decision-data-lake-features"
 FEATURES_PATH = Path("data/features")
 FEATURES_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -264,5 +265,5 @@ def build():
     print(f"Features salvas localmente em {local_file}")
     
     # Upload das features para o S3
-    save_features(df, bucket, "candidates")
-    print(f"Features salvas em s3://{bucket}/features/candidates.parquet")
+    save_features(df, BUCKET_FEATURES, "candidates")
+    print(f"Features salvas em s3://{BUCKET_FEATURES}/features/candidates.parquet")
