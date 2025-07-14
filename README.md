@@ -28,7 +28,7 @@ Projeto de pipeline de Machine Learning para matching e recomendação de vagas 
 
 Este repositório contém um pipeline completo de Machine Learning, cuja finalidade é:
 - Executar processos de ingestão de dados e engenharia de features.
-- Treinar modelos de icação matching/classifpara combinar vagas com candidatos.
+- Treinar modelos de matching/classificação para combinar vagas com candidatos.
 - Treinar modelos de recomendação para sugerir vagas aos candidatos.
 - Monitorar a integridade dos dados com uma robusta detecção de data drift utilizando TF-IDF, KSDrift e PSI.
 - Utilizar AWS S3 para armazenamento e versionamento dos artefatos (dados, modelos e features).
