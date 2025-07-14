@@ -277,18 +277,22 @@ sequenceDiagram
     participant Main as main.py
     participant TP as training_pipeline.py
     participant S3 as AWS S3
+    participant MM as Matching Model
+    participant RM as Recommendation Model
 
     Main->>TP: Inicia pipeline de treinamento
-    TP->>S3: Baixa dados brutos e metadados (origem: Raw Data)
+    TP->>S3: Baixa dados brutos e metadados (Raw Data)
     TP->>TP: Executa build_features.py para transformar dados
     TP->>S3: Faz upload das features (Feature Store)
-    TP->>TP: Chama prepare_matching_data.build()
-    TP->>TP: Chama train_model_tfidVectorizer.run()
-    TP->>S3: Faz upload do modelo de matching versionado
-    TP->>TP: Chama prepare_recommendation_data.build()
-    TP->>TP: Chama train_model_recommendation.run()
-    TP->>S3: Faz upload dos artefatos de recomendação (embeddings, índice Annoy)
-    TP->>S3: Atualiza arquivo latest.txt com as versões do modelo
+    TP->>MM: Chama prepare_matching_data.build()
+    MM->>MM: Processa e pré-treina dados para matching
+    MM->>MM: Executa train_model_tfidVectorizer.run()
+    MM->>S3: Faz upload do modelo de matching versionado
+    TP->>RM: Chama prepare_recommendation_data.build()
+    RM->>RM: Processa e pré-treina dados para recomendação
+    RM->>RM: Executa train_model_recommendation.run()
+    RM->>S3: Faz upload dos artefatos de recomendação (embeddings, índice Annoy)
+    TP->>S3: Atualiza arquivo latest.txt com as versões dos modelos
     TP-->>Main: Retorna conclusão da execução
 ```
 
