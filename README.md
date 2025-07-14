@@ -273,29 +273,24 @@ Abaixo, um diagrama de sequência em Mermaid que ilustra o fluxo completo do pip
 
 ```mermaid
 sequenceDiagram
+    sequenceDiagram
     autonumber
-    participant D as Data Sources
-    participant S3_R as S3 (Raw Data)
-    participant DL as [downloader.py](http://_vscodecontentref_/4)
-    participant BF as [build_features.py](http://_vscodecontentref_/5)
-    participant S3_F as S3 (Feature Store)
-    participant TP as [training_pipeline.py](http://_vscodecontentref_/6)
-    participant MM as Modelo_Matching_Classificacao
-    participant MR as Modelo_Recomendacao_Vagas
-    participant S3_M as S3 (Models)
-    participant DD as [drift_detector.py](http://_vscodecontentref_/7)
+    participant Main as main.py
+    participant TP as training_pipeline.py
+    participant S3 as AWS S3
 
-    D->>S3_R: Armazenamento dos dados brutos
-    S3_R->>DL: Download dos dados (JSON/Parquet)
-    DL->>BF: Dados enviados para processamento das features
-    BF->>S3_F: Upload dos dados processados para Feature Store
-    BF-->>TP: Trigger do pipeline de treinamento
-    TP->>MM: Chama prepare_matching_data.build() e train_model_tfidVectorizer.run()
-    TP->>MR: Chama prepare_recommendation_data.build() e train_model_recommendation.run()
-    MM->>S3_M: Armazena modelo de matching versionado
-    MR->>S3_M: Armazena artefatos do modelo de recomendação (embeddings, índice)
-    TP->>DD: Executa detecção de data drift
-    DD->>S3_R: Leitura dos dados atuais e comparação com features armazenadas
+    Main->>TP: Inicia pipeline de treinamento
+    TP->>S3: Baixa dados brutos e metadados (origem: Raw Data)
+    TP->>TP: Executa build_features.py para transformar dados
+    TP->>S3: Faz upload das features (Feature Store)
+    TP->>TP: Chama prepare_matching_data.build()
+    TP->>TP: Chama train_model_tfidVectorizer.run()
+    TP->>S3: Faz upload do modelo de matching versionado
+    TP->>TP: Chama prepare_recommendation_data.build()
+    TP->>TP: Chama train_model_recommendation.run()
+    TP->>S3: Faz upload dos artefatos de recomendação (embeddings, índice Annoy)
+    TP->>S3: Atualiza arquivo latest.txt com as versões do modelo
+    TP-->>Main: Retorna conclusão da execução
 ```
 
 ## Execução
