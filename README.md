@@ -33,7 +33,7 @@ Este repositório contém um pipeline completo de Machine Learning, cuja finalid
 - Monitorar a integridade dos dados com uma robusta detecção de data drift utilizando TF-IDF, KSDrift e PSI.
 - Utilizar AWS S3 para armazenamento e versionamento dos artefatos (dados, modelos e features).
 
-A aplicação é deployada utilizando containers Docker, orquestrada através do AWS CodeDeploy com CodePipeline, e interage com serviços S3 para gerenciamento de versões.
+A aplicação é deployada utilizando AWS Batch, que executa containers Docker para garantir um ambiente isolado e consistente. O workflow de treinamento é disparado diariamente por meio de um pipeline orquestrado com AWS Lambda e Step Functions, promovendo uma execução recorrente e automatizada. Dessa forma, os modelos são continuamente atualizados com os dados mais recentes, garantindo alta disponibilidade e confiabilidade no processo de treinamento e inferência.
 
 ---
 
