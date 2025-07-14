@@ -19,7 +19,7 @@ Projeto de pipeline de Machine Learning para matching e recomendação de vagas 
 - [Detalhes Conceituais e Modelagem](#detalhes-conceituais-e-modelagem)
   - [Detalhes do Modelo de Matching](#modelos-de-matching)
   - [Detalhes do Modelo de Recomendação](#modelos-de-recomendação)
-- [Boas Práticas](#boas-práticas)
+- [Diagrama de Sequência do Pipeline](#diagrama-de-sequência-do-pipeline)
 - [Execução](#execução)
 
 ---
@@ -297,17 +297,6 @@ sequenceDiagram
     TP->>DD: Executa detecção de data drift
     DD->>S3_R: Leitura dos dados atuais e comparação com features armazenadas
 ```
-
-## Boas Práticas e Recomendações
-
-- **Versionamento com S3**: Utilize o versionamento de buckets no S3 para controlar alterações nos dados e modelos, permitindo rollback seguro e auditoria.
-- **Multilíngue e Stopwords**: Combine stopwords de múltiplas línguas quando trabalhar com dados mistos para melhorar a performance do TfidfVectorizer.
-- **Monitoramento e Relatórios**: Automatize a geração e publicação de relatórios de drift para monitorar a estabilidade dos dados continuamente. Recomenda-se servir esses relatórios via uma plataforma web (por exemplo, Next.js) através de um endpoint backend seguro.
-- **Segurança e Deployment**: Faça uso dos scripts de pré e pós-instalação definidos no `appspec.yml` para garantir uma implantação segura e sem interrupções na AWS ECS. Utilize contêineres Docker para isolar e gerenciar as dependências do seu ambiente.
-- **Cache Local com Metadados**: Ao baixar dados do S3, utilize cache com verificação de metadados para diminuir latências e chamadas desnecessárias, garantindo a atualização dos dados apenas quando necessário.
-- **Estrutura Modular**: Mantenha o código modularizado (separando ingestion, feature engineering, treinamento e monitoramento) para facilitar manutenções futuras e escalabilidade do projeto.
-
----
 
 ## Execução
 
