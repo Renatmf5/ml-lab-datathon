@@ -273,7 +273,6 @@ Abaixo, um diagrama de sequência em Mermaid que ilustra o fluxo completo do pip
 
 ```mermaid
 sequenceDiagram
-    sequenceDiagram
     autonumber
     participant Main as main.py
     participant TP as training_pipeline.py
