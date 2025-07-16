@@ -142,9 +142,27 @@ O modelo de matching foi desenvolvido para identificar se um candidato é adequa
 
 Esses rótulos indicam que o candidato teve um desempenho suficientemente bom em etapas anteriores do processo seletivo e, portanto, deve ser classificado como "match" (valor 1). Por outro lado, todos os demais rótulos são considerados negativos (valor 0).
 
+Em experimentos recentes, os resultados obtidos no conjunto de teste foram:
+          precision    recall  f1-score   support
+
+       0       0.98      0.83      0.89     10154
+       1       0.18      0.64      0.28       594
+
+accuracy                           0.82     10748
+
 ### Parâmetros e Estratégia de Treinamento
 
 #### 1. Pré-processamento
+
+- **Pré-processamento Textual**: 
+  Cada campo textual passa por uma pipeline customizada que aplica:
+
+  - TF-IDF com Stopwords combinadas: Une stopwords em português (obtidas via stop_words) e as do inglês (ENGLISH_STOP_WORDS), garantindo um tratamento robusto de dados multilíngues.
+  - Redução de Dimensionalidade com TruncatedSVD: Após a vetorização, os dados passam por TruncatedSVD, melhorando a performance e reduzindo a colinearidade dos atributos.
+  - Criação de Feature Combinada: A feature combined_keywords é gerada a partir da junção de conhecimentos_tecnicos e principais_atividades, fortalecendo a relação entre as habilidades dos          candidatos e as exigências das vagas. 
+
+- **Balanceamento de Classes**:
+  A aplicação do SMOTE (com sampling_strategy=0.3) no conjunto de treino balanceia a distribuição das classes, melhorando a detecção de candidatos adequados mesmo em datasets desbalanceados.
 
 - **TfidfVectorizer**:  
   Cada coluna de texto é convertida em uma matriz TF-IDF. Foram definidos diferentes parâmetros para maximizar a relevância das features extraídas, de acordo com a natureza de cada coluna:
@@ -158,17 +176,26 @@ Esses rótulos indicam que o candidato teve um desempenho suficientemente bom em
 
 O classificador utilizado foi o XGBoost, escolhido pela sua robustez e capacidade de lidar com conjuntos de dados desbalanceados. Os principais parâmetros definidos foram:
 
-- **learning_rate (0.1)**:  
-  Define o quão rápido o modelo se adapta aos dados. Um valor de 0.1 equilibra a convergência do modelo e o risco de overfitting, permitindo atualizações graduais durante o treinamento.
+- **learning_rate (0.05)**:  
+  Define o quão rápido o modelo se adapta aos dados. Um valor de 0.05 equilibra a convergência do modelo e o risco de overfitting, permitindo atualizações graduais durante o treinamento.
 
-- **max_depth (7)**:  
-  Controla a complexidade das árvores. Com um valor de 7, o modelo possui profundidade suficiente para capturar interações não-lineares sem se tornar excessivamente complexo, o que minimiza o risco de overfitting.
+- **max_depth (5)**:  
+  Controla a complexidade das árvores. Com um valor de 5, o modelo possui profundidade suficiente para capturar interações não-lineares sem se tornar excessivamente complexo, o que minimiza o risco de overfitting.
 
-- **n_estimators (300)**:  
-  Número total de árvores a serem construídas. O valor 300 foi selecionado com base em experimentos e validações internas, garantindo um desempenho robusto na modelagem sem exagerar no número de estimadores.
+- **n_estimators (500)**:  
+  Número total de árvores a serem construídas. O valor 500 foi selecionado com base em experimentos e validações internas, garantindo um desempenho robusto na modelagem sem exagerar no número de estimadores.
+
+- **min_child_weight (3)**:
+  Define o peso mínimo de instâncias em uma folha, atuando como regularizador.
 
 - **scale_pos_weight**:  
   Este parâmetro é calculado como a razão entre o número de casos negativos e positivos. Ele corrige o desbalanceamento de classes, ajudando o modelo a evitar viés para a classe majoritária e melhorando a detecção correta dos casos positivos ("match").
+
+- **subsample (0.8)**:
+  Percentual de amostragem dos dados para cada árvore, reduzindo o risco de overfitting.
+
+- **colsample_bytree (0.8)**:
+  Percentual de amostragem das features por árvore, contribuindo para a robustez do modelo.
 
 - **random_state (42)**:  
   Garante a reprodutibilidade dos resultados, permitindo que os experimentos feitas no modelo sejam replicáveis.
@@ -178,6 +205,14 @@ O classificador utilizado foi o XGBoost, escolhido pela sua robustez e capacidad
 
 - **eval_metric ("logloss")**:  
   Métrica de avaliação utilizada para monitorar a performance do classificador durante o treinamento, adequada para problemas de classificação binária.
+
+**Treinamento e Deploy**
+Durante o treinamento:
+- Os dados são divididos em conjuntos de treino e teste, mantendo a distribuição das classes (stratificação).
+- O pipeline é ajustado (fit) no conjunto de treino e transformado (transform) no conjunto de teste.
+- Após aplicação do SMOTE, o modelo é treinado e avaliado utilizando métricas de classificação (precision, recall e f1-score).
+- O pipeline final, composto pelo pré-processador e o classificador, é salvo localmente e enviado para o S3 com versionamento. O arquivo latest.txt é atualizado para registrar a versão corrente.
+
 
 #### 3. Versionamento e Armazenamento
 

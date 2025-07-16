@@ -30,7 +30,7 @@ def build():
         "titulo_vaga", "tipo_contratacao", "prazo_contratacao", "prioridade_vaga",
         "pais_vaga", "estado_vaga", "cidade_vaga", "vaga_especifica_para_pcd",
         "nivel_profissional_vaga", "nivel_academico_vaga", "nivel_ingles_vaga",
-        "nivel_espanhol_vaga", "outros_idiomas_vaga", "areas_atuacao_vaga", "competencia_tecnicas_e_comportamentais"
+        "nivel_espanhol_vaga", "outros_idiomas_vaga", "areas_atuacao_vaga", "competencia_tecnicas_e_comportamentais","principais_atividades",
     ]
     df_filtered = df[selected_columns].dropna(subset=["match"])
     print(f"Registros após filtro de nulos em match: {len(df_filtered)}")

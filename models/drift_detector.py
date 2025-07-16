@@ -4,7 +4,6 @@ import logging
 import boto3
 import io
 from datetime import datetime
-from langdetect import detect, DetectorFactory
 from alibi_detect.cd import KSDrift
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
@@ -19,7 +18,6 @@ S3_OUTPUT_KEY = "drift_reports/drift_report.html"
 # Combina stop word em portugues e ingles
 pt_stop_words = set(get_stop_words('portuguese'))
 combined_stop_words = list(pt_stop_words.union(ENGLISH_STOP_WORDS))
-DetectorFactory.seed = 0
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -235,30 +233,6 @@ def generate_html_report(result_short: dict, result_long: dict) -> str:
     """
     return html
 
-def analyze_language_composition(df: pd.DataFrame) -> dict:
-    """
-    Analisa a composição de idioma do dataset.
-    Retorna um dicionário com a % dos registros em português, inglês e outros.
-    """
-    languages = {'pt': 0, 'en': 0, 'other': 0}
-    total = len(df)
-    for _, row in df.iterrows():
-        # Concatena todas as colunas do registro em uma única string
-        text = ' '.join(row.astype(str))
-        try:
-            lang = detect(text)
-        except Exception:
-            lang = 'other'
-        if lang.startswith('pt'):
-            languages['pt'] += 1
-        elif lang.startswith('en'):
-            languages['en'] += 1
-        else:
-            languages['other'] += 1
-    # Calcula a porcentagem para cada idioma
-    return {lang: (count / total * 100) for lang, count in languages.items()}
-
-
 def main():
     logging.info(f"Listando versões para s3://{BUCKET_FEATURES}/{KEY}...")
     versions = get_versions(BUCKET_FEATURES, KEY)
@@ -270,12 +244,7 @@ def main():
     # Carrega a versão atual usando a versão mais recente
     logging.info("Carregando a versão atual do arquivo (dados atuais)...")
     current_df = load_parquet_from_s3(BUCKET_FEATURES, KEY, version_id=versions[0]['VersionId'])
-    
-    # Análise da composição de idiomas antes de realizar os testes de drift
-    logging.info("Analisando a composição de idioma dos dados atuais...")
-    language_pct = analyze_language_composition(current_df)
-    logging.info(f"Composição dos dados: {language_pct}")
-    
+        
     # Comparação de curto prazo: penúltima versão
     logging.info("Carregando a penúltima versão (baseline curto prazo)...")
     penultimate_version_id = get_penultimate_version_id(versions)
