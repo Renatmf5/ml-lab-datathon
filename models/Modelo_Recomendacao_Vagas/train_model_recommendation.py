@@ -3,6 +3,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from annoy import AnnoyIndex
 import os
+import torch
 from data.uploader import save_binary_file, update_latest_txt
 from data.downloader import load_parquet_from_s3
 
@@ -22,10 +23,16 @@ BUCKET = "decision-data-lake"
 
 def run(models_version=None):
     # Modelo BERT
-    model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+    model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2", device="cpu" if torch.cuda.is_available() else "cpu")
 
     # Lê os pares do datalake s3
-    df = load_parquet_from_s3(BUCKET, PROCESSED_KEY, LOCAL_FILENAME)   
+    df = load_parquet_from_s3(BUCKET, PROCESSED_KEY, LOCAL_FILENAME)
+    
+    # Verifica se com log se esta executando com cuda ou cpu
+    if torch.cuda.is_available():
+        print("CUDA disponível, usando GPU para embeddings.")
+    else:
+        print("CUDA não disponível, usando CPU para embeddings.")   
 
 
     # Concatena campos de entrada

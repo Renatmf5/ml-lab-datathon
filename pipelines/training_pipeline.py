@@ -17,7 +17,7 @@ def run_training_pipeline():
     # Agora, preparo os dados de recomendação de vagas
     print("Preparando dados de recomendação de vagas...")
     prepare_recommendation_data.build()  # supondo que a função build()
-    #model_version = "v7"  # Defina a versão do modelo conforme necessário
+    #model_version = "v5"  # Defina a versão do modelo conforme necessário
     print("Treinamento do modelo de recomendação de vagas iniciado...")
     train_model_recommendation.run(model_version)  # inicia o treinamento do modelo de recomendação
     print("Pipeline de treinamento concluído com sucesso.")

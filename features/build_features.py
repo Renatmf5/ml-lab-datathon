@@ -94,6 +94,9 @@ def get_location_by_ddd(phone: str) -> str:
     Extrai o DDD do telefone e retorna a localização (cidade, estado)
     a partir do mapeamento em DDD_TO_LOCATION.
     """
+    # Garante que phone seja uma string antes de aplicar a regex
+    if not isinstance(phone, str):
+        phone = str(phone) if phone is not None else ""
     digits = re.sub(r"\D", "", phone)
     if len(digits) >= 2:
         ddd = digits[:2]
